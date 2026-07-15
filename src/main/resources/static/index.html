@@ -41,8 +41,42 @@
             <div class="user-menu" id="user-menu-area">
                 <button class="btn btn-primary" onclick="app.openAuthModal('login')">Login / SignUp</button>
             </div>
+
+            <!-- Hamburger Button for Mobile -->
+            <button class="hamburger-btn" onclick="app.toggleMobileDrawer(true)" aria-label="Open menu">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
         </div>
     </header>
+
+    <!-- Mobile Side Drawer -->
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-header">
+            <div class="logo" onclick="app.showView('home'); app.toggleMobileDrawer(false)">
+                <svg viewBox="0 0 24 24" width="28" height="28" class="logo-icon">
+                    <rect x="2" y="5" width="20" height="12" rx="3" fill="none" stroke="currentColor"
+                        stroke-width="2.5" />
+                    <circle cx="6" cy="19" r="2.5" fill="currentColor" />
+                    <circle cx="18" cy="19" r="2.5" fill="currentColor" />
+                    <path d="M7 10h10M7 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="logo-text">Bus<span>Ease</span></span>
+            </div>
+            <button class="drawer-close" onclick="app.toggleMobileDrawer(false)" aria-label="Close menu">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="#" class="drawer-link active" onclick="app.showView('home'); app.toggleMobileDrawer(false)">Home</a>
+            <a href="#" class="drawer-link" onclick="app.showView('my-bookings'); app.toggleMobileDrawer(false)">My Bookings</a>
+            <a href="#" class="drawer-link admin-link" id="admin-drawer-link" onclick="app.showView('admin-dashboard'); app.toggleMobileDrawer(false)" style="display: none;">Admin Portal</a>
+            <div class="drawer-divider"></div>
+            <div class="drawer-user-area" id="drawer-user-area">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </nav>
+    </div>
+    <div class="drawer-overlay" id="drawer-overlay" onclick="app.toggleMobileDrawer(false)"></div>
 
     <!-- Main Dynamic Content Area -->
     <main id="app-container">

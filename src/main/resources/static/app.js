@@ -68,11 +68,11 @@ class BharatBusApp {
             window.scrollTo(0, 0);
         }
 
-        // Update nav links active status
-        document.querySelectorAll('.nav-link').forEach(link => {
+        // Update nav and drawer links active status
+        document.querySelectorAll('.nav-link, .drawer-link').forEach(link => {
             link.classList.remove('active');
         });
-        const activeLink = document.querySelector(`.nav-links a[onclick*="${viewId}"]`);
+        const activeLink = document.querySelector(`.nav-links a[onclick*="${viewId}"], .drawer-nav a[onclick*="${viewId}"]`);
         if (activeLink) activeLink.classList.add('active');
 
         // Trigger loading specific views data
@@ -80,6 +80,22 @@ class BharatBusApp {
             this.loadUserDashboard();
         } else if (viewId === 'admin-dashboard') {
             this.loadAdminDashboard();
+        }
+    }
+
+    toggleMobileDrawer(show) {
+        const drawer = document.getElementById('mobile-drawer');
+        const overlay = document.getElementById('drawer-overlay');
+        if (drawer && overlay) {
+            if (show) {
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            } else {
+                drawer.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
         }
     }
 
@@ -251,9 +267,11 @@ class BharatBusApp {
         this.closeAuthModal();
         
         // Show proper navigation buttons
-        if (this.currentUser.role === 'ADMIN') {
-            document.getElementById('admin-nav-link').style.display = 'block';
-        }
+        const adminNavLink = document.getElementById('admin-nav-link');
+        const adminDrawerLink = document.getElementById('admin-drawer-link');
+        const displayVal = (this.currentUser.role === 'ADMIN') ? 'block' : 'none';
+        if (adminNavLink) adminNavLink.style.display = displayVal;
+        if (adminDrawerLink) adminDrawerLink.style.display = displayVal;
         
         alert(`Welcome back, ${userData.name}!`);
     }
@@ -261,7 +279,10 @@ class BharatBusApp {
     logout() {
         this.currentUser = null;
         localStorage.removeItem('bb_session');
-        document.getElementById('admin-nav-link').style.display = 'none';
+        const adminNavLink = document.getElementById('admin-nav-link');
+        const adminDrawerLink = document.getElementById('admin-drawer-link');
+        if (adminNavLink) adminNavLink.style.display = 'none';
+        if (adminDrawerLink) adminDrawerLink.style.display = 'none';
         this.updateHeaderUI();
         this.showView('home');
         alert("Logged out successfully.");
@@ -269,22 +290,36 @@ class BharatBusApp {
 
     updateHeaderUI() {
         const area = document.getElementById('user-menu-area');
-        if (!area) return;
-
-        if (this.currentUser) {
-            area.innerHTML = `
-                <div class="user-profile-menu" style="display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="app.showView('my-bookings')">
-                    <div class="avatar-small">${this.currentUser.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
-                    <span style="font-weight:600; font-size:14px; color:var(--secondary);">${this.currentUser.name}</span>
-                </div>
-            `;
-            if (this.currentUser.role === 'ADMIN') {
-                document.getElementById('admin-nav-link').style.display = 'block';
+        const drawerArea = document.getElementById('drawer-user-area');
+        
+        const generateUserHTML = (user) => {
+            if (user) {
+                return `
+                    <div class="user-profile-menu" style="display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="app.showView('my-bookings'); if(typeof app.toggleMobileDrawer === 'function') app.toggleMobileDrawer(false);">
+                        <div class="avatar-small">${user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+                        <span style="font-weight:600; font-size:14px; color:var(--secondary);">${user.name}</span>
+                    </div>
+                `;
+            } else {
+                return `<button class="btn btn-primary" onclick="app.openAuthModal('login'); if(typeof app.toggleMobileDrawer === 'function') app.toggleMobileDrawer(false);">Login / SignUp</button>`;
             }
-        } else {
-            area.innerHTML = `<button class="btn btn-primary" onclick="app.openAuthModal('login')">Login / SignUp</button>`;
-            document.getElementById('admin-nav-link').style.display = 'none';
+        };
+
+        if (area) {
+            area.innerHTML = generateUserHTML(this.currentUser);
         }
+
+        if (drawerArea) {
+            drawerArea.innerHTML = generateUserHTML(this.currentUser);
+        }
+
+        // Show/Hide Admin Portal Links
+        const adminNavLink = document.getElementById('admin-nav-link');
+        const adminDrawerLink = document.getElementById('admin-drawer-link');
+        const displayVal = (this.currentUser && this.currentUser.role === 'ADMIN') ? 'block' : 'none';
+
+        if (adminNavLink) adminNavLink.style.display = displayVal;
+        if (adminDrawerLink) adminDrawerLink.style.display = displayVal;
     }
 
     // ================= BUS SEARCH & FILTERS =================
