@@ -219,69 +219,74 @@
         <section id="view-results" class="app-view">
             <div class="results-page-container">
                 <!-- Filters Sidebar -->
-                <aside class="filters-sidebar">
-                    <div class="sidebar-header">
-                        <h3>Filters</h3>
-                        <button class="btn-clear-filters" onclick="app.clearFilters()">Clear All</button>
-                    </div>
-
-                    <div class="filter-group">
-                        <h4>Departure Time</h4>
-                        <label class="checkbox-container">Night / Early Morning (12 AM - 6 AM)
-                            <input type="checkbox" value="night" class="filter-time" onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">Morning Session (6 AM - 12 PM)
-                            <input type="checkbox" value="morning" class="filter-time" onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">Afternoon Session (12 PM - 6 PM)
-                            <input type="checkbox" value="afternoon" class="filter-time" onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">Evening Session (6 PM - 12 AM)
-                            <input type="checkbox" value="evening" class="filter-time" onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-
-                    <div class="filter-group">
-                        <h4>Bus Class</h4>
-                        <label class="checkbox-container">AC Sleeper
-                            <input type="checkbox" value="A/C Sleeper" class="filter-type"
-                                onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">AC Seater
-                            <input type="checkbox" value="A/C Seater" class="filter-type" onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">Non-AC Sleeper
-                            <input type="checkbox" value="Non-A/C Sleeper" class="filter-type"
-                                onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="checkbox-container">Non-AC Seater
-                            <input type="checkbox" value="Non-A/C Seater" class="filter-type"
-                                onchange="app.applyFilters()">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-
-                    <div class="filter-group">
-                        <h4>Bus Operators</h4>
-                        <div id="operator-filter-list">
-                            <!-- Populated dynamically -->
+                <aside class="filters-sidebar" id="filters-sidebar">
+                    <div class="sidebar-header" onclick="app.toggleMobileFilters()">
+                        <div class="sidebar-title-group" style="display: flex; align-items: center; gap: 8px;">
+                            <h3>Filters</h3>
+                            <span class="material-symbols-outlined filter-expand-icon" style="transition: transform 0.3s ease;">expand_more</span>
                         </div>
+                        <button class="btn-clear-filters" onclick="event.stopPropagation(); app.clearFilters()">Clear All</button>
                     </div>
 
-                    <div class="filter-group">
-                        <h4>Price Range</h4>
-                        <input type="range" id="filter-price-slider" min="300" max="3000" step="50" value="3000"
-                            oninput="app.updatePriceDisplay(this.value)" onchange="app.applyFilters()">
-                        <div class="price-display-wrapper">
-                            <span>₹300</span>
-                            <span id="price-limit-label">₹3000</span>
+                    <div class="filter-content-wrapper" id="filter-content-wrapper">
+                        <div class="filter-group">
+                            <h4>Departure Time</h4>
+                            <label class="checkbox-container">Night / Early Morning (12 AM - 6 AM)
+                                <input type="checkbox" value="night" class="filter-time" onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Morning Session (6 AM - 12 PM)
+                                <input type="checkbox" value="morning" class="filter-time" onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Afternoon Session (12 PM - 6 PM)
+                                <input type="checkbox" value="afternoon" class="filter-time" onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Evening Session (6 PM - 12 AM)
+                                <input type="checkbox" value="evening" class="filter-time" onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Bus Class</h4>
+                            <label class="checkbox-container">AC Sleeper
+                                <input type="checkbox" value="A/C Sleeper" class="filter-type"
+                                    onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">AC Seater
+                                <input type="checkbox" value="A/C Seater" class="filter-type" onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Non-AC Sleeper
+                                <input type="checkbox" value="Non-A/C Sleeper" class="filter-type"
+                                    onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Non-AC Seater
+                                <input type="checkbox" value="Non-A/C Seater" class="filter-type"
+                                    onchange="app.applyFilters()">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Bus Operators</h4>
+                            <div id="operator-filter-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Price Range</h4>
+                            <input type="range" id="filter-price-slider" min="300" max="3000" step="50" value="3000"
+                                oninput="app.updatePriceDisplay(this.value)" onchange="app.applyFilters()">
+                            <div class="price-display-wrapper">
+                                <span>₹300</span>
+                                <span id="price-limit-label">₹3000</span>
+                            </div>
                         </div>
                     </div>
                 </aside>

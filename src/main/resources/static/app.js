@@ -381,6 +381,14 @@ class BharatBusApp {
         this.applyFilters();
     }
 
+    toggleMobileFilters() {
+        if (window.innerWidth > 1024) return; // Only toggle on mobile/tablet
+        const sidebar = document.getElementById('filters-sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('expanded');
+        }
+    }
+
     applyFilters() {
         // Time Filters
         const timeFilters = Array.from(document.querySelectorAll('.filter-time:checked')).map(cb => cb.value);
@@ -457,18 +465,18 @@ class BharatBusApp {
                         <h3>${trip.bus.operatorName}</h3>
                         <span>${trip.bus.busType}</span>
                     </div>
-                    <div class="time-details">
-                        <span class="time">${depTime}</span>
-                        <span class="location">${trip.route.source}</span>
+                    
+                    <div class="journey-details-flex">
+                        <div class="time-details dep-time">
+                            <span class="time">${depTime}</span>
+                            <span class="location">${trip.route.source}</span>
+                        </div>
+                        <div class="time-details arr-time">
+                            <span class="time">${arrTime}</span>
+                            <span class="location">${trip.route.destination}</span>
+                        </div>
                     </div>
-                    <div class="duration-details">
-                        <span class="duration">${trip.route.duration}</span>
-                        <div class="duration-line"></div>
-                    </div>
-                    <div class="time-details">
-                        <span class="time">${arrTime}</span>
-                        <span class="location">${trip.route.destination}</span>
-                    </div>
+                    
                     <div class="price-details">
                         <span class="price">₹${trip.bus.price}</span>
                         <div class="rating-badge" style="margin-left: 10px;">★ ${trip.bus.rating}</div>
