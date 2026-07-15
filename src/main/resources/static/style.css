@@ -2737,7 +2737,7 @@ body {
     display: flex;
     gap: 30px;
     width: max-content;
-    animation: marqueeLeftToRight 8s linear infinite;
+    animation: marqueeLeftToRight 12s linear infinite;
 }
 
 .testimonials-slider:hover {
