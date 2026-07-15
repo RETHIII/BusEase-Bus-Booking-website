@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusEase | Premium Bus Booking & Reservations</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='5' width='20' height='12' rx='3' fill='none' stroke='%23d84f57' stroke-width='2.5'/%3E%3Ccircle cx='6' cy='19' r='2.5' fill='%23d84f57'/%3E%3Ccircle cx='18' cy='19' r='2.5' fill='%23d84f57'/%3E%3Cpath d='M7 10h10M7 13h6' stroke='%23d84f57' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+    <!-- Premium Glowing Top Bar -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo" onclick="app.showView('home')">
+                <svg viewBox="0 0 24 24" width="32" height="32" class="logo-icon">
+                    <rect x="2" y="5" width="20" height="12" rx="3" fill="none" stroke="currentColor"
+                        stroke-width="2.5" />
+                    <circle cx="6" cy="19" r="2.5" fill="currentColor" />
+                    <circle cx="18" cy="19" r="2.5" fill="currentColor" />
+                    <path d="M7 10h10M7 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span class="logo-text">Bus<span>Ease</span></span>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" onclick="app.showView('home')">Home</a>
+                <a href="#" class="nav-link" onclick="app.showView('my-bookings')">My Bookings</a>
+                <a href="#" class="nav-link admin-link" id="admin-nav-link" onclick="app.showView('admin-dashboard')"
+                    style="display: none;">Admin Portal</a>
+            </nav>
+
+            <div class="user-menu" id="user-menu-area">
+                <button class="btn btn-primary" onclick="app.openAuthModal('login')">Login / SignUp</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Area -->
+    <main id="app-container">
+
+        <!-- ================= HOME / SEARCH VIEW ================= -->
+        <section id="view-home" class="app-view active">
+            <div class="hero-section">
+                <div class="hero-bg-overlay"></div>
+                <div class="hero-content">
+                    <h1>India's No. 1 Premium Bus Booking Platform</h1>
+                    <p>Experience smooth, high-class journeys with seat selection & pre-booking</p>
+
+                    <!-- Search Widget -->
+                    <div class="search-widget-wrapper">
+                        <form id="search-form" class="search-form" onsubmit="app.handleSearch(event)">
+                            <div class="search-input-group">
+                                <label for="search-from">From</label>
+                                <div class="input-with-icon">
+                                    <svg viewBox="0 0 24 24" class="input-icon">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                            fill="currentColor" />
+                                    </svg>
+                                    <input type="text" id="search-from" placeholder="Enter departure city"
+                                        autocomplete="off" required>
+                                </div>
+                                <div id="from-suggestions" class="suggestions-dropdown"></div>
+                            </div>
+
+                            <div class="search-swap-btn" onclick="app.swapCities()">
+                                <svg viewBox="0 0 24 24" width="20" height="20">
+                                    <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"
+                                        fill="currentColor" />
+                                </svg>
+                            </div>
+
+                            <div class="search-input-group">
+                                <label for="search-to">To</label>
+                                <div class="input-with-icon">
+                                    <svg viewBox="0 0 24 24" class="input-icon">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                            fill="currentColor" />
+                                    </svg>
+                                    <input type="text" id="search-to" placeholder="Enter destination city"
+                                        autocomplete="off" required>
+                                </div>
+                                <div id="to-suggestions" class="suggestions-dropdown"></div>
+                            </div>
+
+                            <div class="search-input-group">
+                                <label for="search-date">Date of Journey</label>
+                                <div class="input-with-icon">
+                                    <svg viewBox="0 0 24 24" class="input-icon">
+                                        <path
+                                            d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"
+                                            fill="currentColor" />
+                                    </svg>
+                                    <input type="date" id="search-date" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-search">Search Buses</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features / Offers Section -->
+            <div class="offers-container">
+                <h2 class="section-title">Why Book with BusEase?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined feature-icon icon-flash">
+                            flash_on
+                        </span>
+                        <h3>Instant Seat Lock</h3>
+                        <p>No waiting. Select and secure your exact seat in real-time instantly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined feature-icon icon-security">
+                            security
+                        </span>
+                        <h3>Prebook Option</h3>
+                        <p>Pay only ₹99 per seat to reserve. Settle the balance directly when boarding.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="material-symbols-outlined feature-icon icon-quality">
+                            confirmation_number
+                        </span>
+                        <h3>Redbus Quality</h3>
+                        <p>Access high-class AC Sleepers, premium seating, and top-rated operators.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonials Section -->
+            <div class="testimonials-section">
+                <h2 class="home-section-title">Customer Reviews & Ratings</h2>
+                <div class="testimonials-slider" id="homepage-feedback-list">
+                    <!-- Populated dynamically from API -->
+                </div>
+            </div>
+
+            <!-- Contact Us Section -->
+            <div class="contact-section">
+                <div class="contact-card glass-card">
+                    <div class="contact-header">
+                        <h2>Contact BusEase Support</h2>
+                        <p>Have questions about your booking? Get in touch with our team instantly.</p>
+                    </div>
+                    <form onsubmit="app.handleContactSubmit(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Your Name</label>
+                                <input type="text" id="contact-name" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="contact-user-email" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>Subject</label>
+                            <input type="text" id="contact-subject" placeholder="Feedback / Support Inquiry" required>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>Message</label>
+                            <textarea id="contact-message" rows="4" placeholder="How can we help you?" required
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text-main); outline: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px;">Send
+                            Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SEARCH RESULTS VIEW ================= -->
+        <section id="view-results" class="app-view">
+            <div class="results-page-container">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Filters</h3>
+                        <button class="btn-clear-filters" onclick="app.clearFilters()">Clear All</button>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Departure Time</h4>
+                        <label class="checkbox-container">Night / Early Morning (12 AM - 6 AM)
+                            <input type="checkbox" value="night" class="filter-time" onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Morning Session (6 AM - 12 PM)
+                            <input type="checkbox" value="morning" class="filter-time" onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Afternoon Session (12 PM - 6 PM)
+                            <input type="checkbox" value="afternoon" class="filter-time" onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Evening Session (6 PM - 12 AM)
+                            <input type="checkbox" value="evening" class="filter-time" onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Bus Class</h4>
+                        <label class="checkbox-container">AC Sleeper
+                            <input type="checkbox" value="A/C Sleeper" class="filter-type"
+                                onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">AC Seater
+                            <input type="checkbox" value="A/C Seater" class="filter-type" onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Non-AC Sleeper
+                            <input type="checkbox" value="Non-A/C Sleeper" class="filter-type"
+                                onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="checkbox-container">Non-AC Seater
+                            <input type="checkbox" value="Non-A/C Seater" class="filter-type"
+                                onchange="app.applyFilters()">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Bus Operators</h4>
+                        <div id="operator-filter-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Price Range</h4>
+                        <input type="range" id="filter-price-slider" min="300" max="3000" step="50" value="3000"
+                            oninput="app.updatePriceDisplay(this.value)" onchange="app.applyFilters()">
+                        <div class="price-display-wrapper">
+                            <span>₹300</span>
+                            <span id="price-limit-label">₹3000</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Search Result List -->
+                <div class="results-main">
+                    <div class="results-meta">
+                        <h2 id="results-heading">Buses from Source to Destination</h2>
+                        <span id="results-count">0 buses found</span>
+                    </div>
+
+                    <div id="bus-list" class="bus-list">
+                        <!-- Bus Cards will be injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= BOOKING & DETAILS VIEW ================= -->
+        <section id="view-booking" class="app-view">
+            <div class="booking-page-container">
+                <div class="booking-left">
+                    <!-- Passenger Info Card -->
+                    <div class="glass-card passenger-info-card">
+                        <h2>Passenger Details</h2>
+                        <p class="subtitle">Please enter name and age as printed on government ID card.</p>
+
+                        <form id="booking-passenger-form">
+                            <div id="passenger-inputs-container">
+                                <!-- Passenger inputs dynamically generated here -->
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Contact Details Card -->
+                    <div class="glass-card contact-info-card">
+                        <h2>Contact Details</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact-email">Email Address</label>
+                                <input type="email" id="contact-email" placeholder="email@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Phone Number</label>
+                                <input type="tel" id="contact-phone" placeholder="9876543210" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Option/Payment type selection -->
+                    <div class="glass-card booking-option-card">
+                        <h2>Choose Booking Option</h2>
+                        <div class="booking-option-grid">
+                            <div class="booking-option-item active" id="opt-pay-full"
+                                onclick="app.setBookingType('FULL')">
+                                <div class="option-radio">
+                                    <div class="radio-inner"></div>
+                                </div>
+                                <div class="option-details">
+                                    <h3>Pay Full Amount</h3>
+                                    <p>Pay 100% now via secure checkout. No outstanding bills.</p>
+                                </div>
+                            </div>
+
+                            <div class="booking-option-item" id="opt-pay-prebook"
+                                onclick="app.setBookingType('PREBOOK')">
+                                <div class="option-radio">
+                                    <div class="radio-inner"></div>
+                                </div>
+                                <div class="option-details">
+                                    <h3>Prebook (Pay ₹99 / seat now)</h3>
+                                    <p>Confirm booking with a small deposit. Settle balance on boarding.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-right">
+                    <!-- Fare Breakup Summary Card -->
+                    <div class="glass-card fare-summary-card">
+                        <h2>Fare Breakup</h2>
+                        <div class="fare-row">
+                            <span id="fare-base-label">Base Fare (1 Seat)</span>
+                            <span id="fare-base-val">₹0.00</span>
+                        </div>
+                        <div class="fare-row">
+                            <span>Taxes & GST (18%)</span>
+                            <span id="fare-gst-val">₹0.00</span>
+                        </div>
+                        <div class="fare-row">
+                            <span>Booking Fee</span>
+                            <span id="fare-fee-val">₹25.00</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="fare-row total">
+                            <span>Total Ticket Fare</span>
+                            <span id="fare-total-val">₹0.00</span>
+                        </div>
+
+                        <!-- Coupon Discount Code Section -->
+                        <div class="coupon-section-box">
+                            <div class="divider" style="margin: 10px 0;"></div>
+                            <div class="coupon-input-wrapper" style="display: flex; gap: 8px; margin-bottom: 10px;">
+                                <input type="text" id="coupon-code-input" placeholder="Coupon Code"
+                                    style="text-transform: uppercase; flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 13px;">
+                                <button class="btn btn-secondary" onclick="app.applyCouponCode()"
+                                    style="padding: 8px 16px; font-size: 13px;">Apply</button>
+                            </div>
+                            <div id="coupon-applied-message" class="coupon-msg"
+                                style="font-size: 12px; font-weight: 600; margin-bottom: 10px; display: none;"></div>
+                            <div class="available-coupons" style="font-size: 11px; margin-top: 5px;">
+                                <span
+                                    style="font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Promo
+                                    Codes:</span>
+                                <div class="coupon-badges" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    <span class="coupon-badge" onclick="app.selectCoupon('FIRSTBUS')"
+                                        style="background: #edf2f7; padding: 3px 8px; border-radius: 4px; cursor: pointer; color: var(--text-main); font-weight: 600; border: 1px dashed #cbd5e0;">FIRSTBUS</span>
+                                    <span class="coupon-badge" onclick="app.selectCoupon('BUSEASE10')"
+                                        style="background: #edf2f7; padding: 3px 8px; border-radius: 4px; cursor: pointer; color: var(--text-main); font-weight: 600; border: 1px dashed #cbd5e0;">BUSEASE10</span>
+                                    <span class="coupon-badge" onclick="app.selectCoupon('SAVE150')"
+                                        style="background: #edf2f7; padding: 3px 8px; border-radius: 4px; cursor: pointer; color: var(--text-main); font-weight: 600; border: 1px dashed #cbd5e0;">SAVE150</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment option details -->
+                        <div class="prebook-breakdown" id="prebook-summary-box" style="display: none;">
+                            <div class="fare-row highlight">
+                                <span>Payable Now (Token)</span>
+                                <span id="fare-payable-now">₹0.00</span>
+                            </div>
+                            <div class="fare-row outstanding">
+                                <span>Pay on Boarding</span>
+                                <span id="fare-payable-later">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block btn-pay" onclick="app.proceedToPayment()">Proceed to
+                            Payment</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MOCK PAYMENT GATEWAY ================= -->
+        <div id="payment-gateway-modal" class="modal-overlay">
+            <div class="payment-gateway-container">
+                <div class="payment-gateway-header">
+                    <div class="brand">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                        </svg>
+                        <span>BusEasePay Secure Gateway</span>
+                    </div>
+                    <div class="amount-due">
+                        <span>Amount to Pay</span>
+                        <h2 id="payment-modal-amount">₹0.00</h2>
+                    </div>
+                </div>
+
+                <div class="payment-body">
+                    <!-- Left Tab Options -->
+                    <div class="payment-tabs">
+                        <div class="payment-tab active" onclick="app.switchPaymentTab('card')">💳 Credit / Debit Card
+                        </div>
+                        <div class="payment-tab" onclick="app.switchPaymentTab('upi')">📱 UPI / QR Code</div>
+                        <div class="payment-tab" onclick="app.switchPaymentTab('net')">🏦 Net Banking</div>
+                        <div class="payment-tab" onclick="app.switchPaymentTab('wallet')">💼 Wallets</div>
+                    </div>
+
+                    <!-- Right Tab Contents -->
+                    <div class="payment-contents">
+                        <!-- Card Form -->
+                        <div class="payment-content active" id="pay-content-card">
+                            <div class="credit-card-preview" id="credit-card-preview">
+                                <div class="card-chip"></div>
+                                <div class="card-number" id="card-preview-number">•••• •••• •••• ••••</div>
+                                <div class="card-row">
+                                    <div class="card-holder" id="card-preview-holder">NAME ON CARD</div>
+                                    <div class="card-expiry" id="card-preview-expiry">MM/YY</div>
+                                </div>
+                            </div>
+
+                            <form class="card-form" onsubmit="app.processPaymentSubmit(event)">
+                                <div class="form-group">
+                                    <label>Card Number</label>
+                                    <input type="text" id="card-num-input" placeholder="4111 2222 3333 4444"
+                                        maxlength="19" required oninput="app.updateCardPreviewNum(this.value)">
+                                </div>
+                                <div class="form-group">
+                                    <label>Card Holder Name</label>
+                                    <input type="text" id="card-name-input" placeholder="JOHN DOE" required
+                                        oninput="app.updateCardPreviewName(this.value)">
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Expiry Date</label>
+                                        <input type="text" id="card-exp-input" placeholder="MM/YY" maxlength="5"
+                                            required oninput="app.updateCardPreviewExpiry(this.value)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>CVV</label>
+                                        <input type="password" id="card-cvv-input" placeholder="•••" maxlength="3"
+                                            required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block">Pay Securely</button>
+                            </form>
+                        </div>
+
+                        <!-- UPI Tab -->
+                        <div class="payment-content" id="pay-content-upi">
+                            <div class="upi-box">
+                                <p class="qr-info">Scan the QR code using any UPI App (GPay, PhonePe, Paytm)</p>
+                                <div class="qr-code-wrapper"
+                                    style="display:flex; justify-content:center; align-items:center; background:white; padding:15px; border-radius:12px; border:1px solid var(--border-color); width:200px; height:200px; margin: 0 auto 15px;">
+                                    <img id="real-upi-qr" src="" alt="UPI QR Code"
+                                        style="width:100%; height:100%; object-fit:contain;">
+                                </div>
+                                <div class="timer-box">
+                                    <span>Session expires in</span>
+                                    <span id="upi-timer" class="timer">01:59</span>
+                                </div>
+                                <div class="divider-text">OR</div>
+                                <div class="form-group">
+                                    <label>Enter UPI ID</label>
+                                    <div class="input-action-group">
+                                        <input type="text" id="upi-id-input" placeholder="username@upi">
+                                        <button class="btn btn-success" onclick="app.verifyAndPayUPI()">Pay</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Net Banking -->
+                        <div class="payment-content" id="pay-content-net">
+                            <h3>Popular Banks</h3>
+                            <div class="bank-grid">
+                                <div class="bank-item" onclick="app.selectBank('SBI')">🏦 SBI</div>
+                                <div class="bank-item" onclick="app.selectBank('HDFC')">🏦 HDFC</div>
+                                <div class="bank-item" onclick="app.selectBank('ICICI')">🏦 ICICI</div>
+                                <div class="bank-item" onclick="app.selectBank('AXIS')">🏦 AXIS</div>
+                            </div>
+                            <button class="btn btn-success btn-block" onclick="app.processBankPayment()"
+                                style="margin-top:20px;">Pay via Net Banking</button>
+                        </div>
+
+                        <!-- Wallets -->
+                        <div class="payment-content" id="pay-content-wallet">
+                            <h3>Select Wallet</h3>
+                            <div class="wallet-grid">
+                                <label class="wallet-item">
+                                    <input type="radio" name="wallet-opt" value="Paytm" checked>
+                                    <span>Paytm Wallet</span>
+                                </label>
+                                <label class="wallet-item">
+                                    <input type="radio" name="wallet-opt" value="AmazonPay">
+                                    <span>Amazon Pay</span>
+                                </label>
+                                <label class="wallet-item">
+                                    <input type="radio" name="wallet-opt" value="Mobikwik">
+                                    <span>Mobikwik</span>
+                                </label>
+                            </div>
+                            <button class="btn btn-success btn-block" onclick="app.processWalletPayment()"
+                                style="margin-top:20px;">Pay via Wallet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAYMENT LOADER ================= -->
+        <div id="payment-loader-modal" class="modal-overlay">
+            <div class="loader-card">
+                <div class="spinner-circle"></div>
+                <h2 id="loader-title">Processing Payment...</h2>
+                <p id="loader-desc">Please do not refresh the page or click back button.</p>
+            </div>
+        </div>
+
+        <!-- ================= TICKET CONFIRMATION VIEW ================= -->
+        <section id="view-ticket" class="app-view">
+            <div class="ticket-page-container">
+                <div class="success-banner">
+                    <div class="success-icon">✓</div>
+                    <h2>Booking Confirmed!</h2>
+                    <p id="ticket-success-message">Your ticket has been booked successfully.</p>
+                </div>
+
+                <!-- Printable Ticket Card -->
+                <div class="ticket-card-wrapper" id="printable-ticket">
+                    <div class="ticket-top">
+                        <div class="ticket-logo">
+                            <span class="logo-text">Bus<span>Ease</span></span>
+                        </div>
+                        <div class="ticket-status-stamp" id="ticket-stamp-type">FULL PAYMENT</div>
+                    </div>
+
+                    <div class="ticket-journey-info">
+                        <div class="city-box">
+                            <h3 id="ticket-source">MUMBAI</h3>
+                            <span id="ticket-dep-time">08:00 AM</span>
+                        </div>
+                        <div class="journey-arrow">
+                            <span id="ticket-duration">3h 30m</span>
+                            <div class="arrow-line"></div>
+                        </div>
+                        <div class="city-box right">
+                            <h3 id="ticket-destination">PUNE</h3>
+                            <span id="ticket-arr-time">11:30 AM</span>
+                        </div>
+                    </div>
+
+                    <div class="divider-dashed"></div>
+
+                    <div class="ticket-grid">
+                        <div class="ticket-info-item">
+                            <span>Travel Date</span>
+                            <strong id="ticket-date">July 10, 2026</strong>
+                        </div>
+                        <div class="ticket-info-item">
+                            <span>Bus Operator</span>
+                            <strong id="ticket-bus-number">IN-45-XX-1122 (VRL Travels)</strong>
+                        </div>
+                        <div class="ticket-info-item">
+                            <span>Booking ID</span>
+                            <strong id="ticket-booking-id">BB-1002345</strong>
+                        </div>
+                        <div class="ticket-info-item">
+                            <span>Payment Transaction ID</span>
+                            <strong id="ticket-tx-id">TXN-4829103</strong>
+                        </div>
+                    </div>
+
+                    <div class="divider-dashed"></div>
+
+                    <div class="ticket-passenger-section">
+                        <h4>Passenger & Seat Summary</h4>
+                        <table class="passenger-ticket-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age / Gender</th>
+                                    <th>Seat Number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticket-passenger-rows">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="divider-dashed"></div>
+
+                    <div class="ticket-footer-calculations">
+                        <div class="calc-row">
+                            <span>Total Ticket Value</span>
+                            <strong id="ticket-total-fare">₹0.00</strong>
+                        </div>
+                        <div class="calc-row">
+                            <span>Paid Online</span>
+                            <strong id="ticket-amount-paid" class="text-success">₹0.00</strong>
+                        </div>
+                        <div class="calc-row highlight" id="ticket-due-row" style="display: none;">
+                            <span>Balance to pay on Boarding</span>
+                            <strong id="ticket-amount-due" class="text-warning">₹0.00</strong>
+                        </div>
+                    </div>
+
+                    <div class="ticket-barcode-section">
+                        <div class="barcode-graphics">
+                            <div class="bar"></div>
+                            <div class="bar thin"></div>
+                            <div class="bar"></div>
+                            <div class="bar fat"></div>
+                            <div class="bar thin"></div>
+                            <div class="bar"></div>
+                            <div class="bar fat"></div>
+                            <div class="bar thin"></div>
+                            <div class="bar"></div>
+                            <div class="bar fat"></div>
+                            <div class="bar thin"></div>
+                            <div class="bar"></div>
+                        </div>
+                        <p class="ticket-instructions">Please show this ticket on your mobile device at the time of
+                            boarding.</p>
+                    </div>
+                </div>
+
+                <!-- Customer Feedback Form Section -->
+                <div class="glass-card ticket-feedback-card" style="margin-top: 30px;" id="feedback-form-card">
+                    <h3>Share Your Journey Experience</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Your feedback helps us
+                        maintain premium class services.</p>
+                    <form onsubmit="app.handleFeedbackSubmit(event)">
+                        <div class="rating-stars-input"
+                            style="margin-bottom: 15px; display:flex; gap:8px; align-items:center;">
+                            <span style="font-size:14px; font-weight:600; color:var(--text-muted);">Rating:</span>
+                            <div class="stars-row"
+                                style="display:flex; gap:4px; color:#e2e8f0; cursor:pointer; font-size:24px; line-height: 1;">
+                                <span class="star-opt" data-rating="1" onclick="app.setRatingValue(1)"
+                                    style="transition: color 0.2s;">★</span>
+                                <span class="star-opt" data-rating="2" onclick="app.setRatingValue(2)"
+                                    style="transition: color 0.2s;">★</span>
+                                <span class="star-opt" data-rating="3" onclick="app.setRatingValue(3)"
+                                    style="transition: color 0.2s;">★</span>
+                                <span class="star-opt" data-rating="4" onclick="app.setRatingValue(4)"
+                                    style="transition: color 0.2s;">★</span>
+                                <span class="star-opt active" data-rating="5" onclick="app.setRatingValue(5)"
+                                    style="transition: color 0.2s; color:#ecc94b;">★</span>
+                            </div>
+                            <input type="hidden" id="feedback-rating-val" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Write Comment</label>
+                            <textarea id="feedback-comment-input" rows="3"
+                                placeholder="Tell us about the driver comfort, timing cleanliness, etc..." required
+                                style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); font-family:inherit; outline:none; font-size:14px; font-weight: 500; color: var(--text-main);"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                            style="margin-top: 15px; width:fit-content; padding: 10px 24px;">Submit Feedback</button>
+                    </form>
+                </div>
+
+                <div class="ticket-actions">
+                    <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Ticket</button>
+                    <button class="btn btn-primary" onclick="app.showView('home')">Book Another Ticket</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= USER PROFILE / BOOKINGS VIEW ================= -->
+        <section id="view-my-bookings" class="app-view">
+            <div class="dashboard-page-container">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile-badge">
+                        <div class="avatar" id="avatar-letters">JD</div>
+                        <h3 id="profile-name">John Doe</h3>
+                        <span id="profile-email">john@gmail.com</span>
+                    </div>
+                    <div class="dash-menu">
+                        <div class="dash-menu-item active" onclick="app.switchDashTab('history')">🎟️ Booking History
+                        </div>
+                        <div class="dash-menu-item" onclick="app.logout()">logout</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <h2>My Booking History</h2>
+                    <div id="booking-history-list" class="booking-history-list">
+                        <!-- Populated dynamically with past/future bookings -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ADMIN PORTAL VIEW ================= -->
+        <section id="view-admin-dashboard" class="app-view">
+            <div class="admin-page-container">
+                <div class="admin-dashboard-header">
+                    <h2>Admin Management Dashboard</h2>
+                    <p class="subtitle">Real-time occupancy rates, revenues calculations, and bus operations.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="admin-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-details">
+                            <span>Total Bookings</span>
+                            <h2 id="admin-stat-bookings">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-details">
+                            <span>Collected Revenue</span>
+                            <h2 id="admin-stat-collected">₹0.00</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-details">
+                            <span>Outstanding (Pay on Board)</span>
+                            <h2 id="admin-stat-outstanding">₹0.00</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚌</div>
+                        <div class="stat-details">
+                            <span>Active Buses</span>
+                            <h2 id="admin-stat-buses">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-details">
+                            <span>Occupancy Rate</span>
+                            <h2 id="admin-stat-occupancy">0%</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tabs -->
+                <div class="admin-tabs">
+                    <button class="btn btn-secondary active" id="btn-admin-tab-buses"
+                        onclick="app.switchAdminTab('buses')">Bus Seating Status</button>
+                    <button class="btn btn-secondary" id="btn-admin-tab-bookings"
+                        onclick="app.switchAdminTab('bookings')">All Customer Bookings</button>
+                    <button class="btn btn-secondary" id="btn-admin-tab-users"
+                        onclick="app.switchAdminTab('users')">Registered Users</button>
+                    <button class="btn btn-secondary" id="btn-admin-tab-feedbacks"
+                        onclick="app.switchAdminTab('feedbacks')">Customer Feedbacks</button>
+                </div>
+
+                <!-- Admin Bus Status Tab -->
+                <div class="admin-tab-content active" id="admin-content-buses">
+                    <div class="table-actions">
+                        <h3>Operating Fleet Seats Details</h3>
+                        <button class="btn btn-primary" onclick="app.openAddBusModal()">+ Add New Bus</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Bus Number</th>
+                                    <th>Operator Name</th>
+                                    <th>Bus Type</th>
+                                    <th>Total Seats</th>
+                                    <th>Booked Seats</th>
+                                    <th>Available Seats</th>
+                                    <th>Base Fare</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-bus-rows">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Bookings Tab -->
+                <div class="admin-tab-content" id="admin-content-bookings">
+                    <h3>All System Bookings</h3>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Journey Date</th>
+                                    <th>Route</th>
+                                    <th>Seats Booked</th>
+                                    <th>Fare Type</th>
+                                    <th>Paid Online</th>
+                                    <th>Outstanding</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-booking-rows">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Registered Users Tab -->
+                <div class="admin-tab-content" id="admin-content-users">
+                    <h3>Registered Customers Log</h3>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>OAuth Provider</th>
+                                    <th>Account Created</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-user-rows">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Customer Feedbacks Tab -->
+                <div class="admin-tab-content" id="admin-content-feedbacks">
+                    <h3>Customer Feedbacks Log</h3>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Review ID</th>
+                                    <th>Name</th>
+                                    <th>Email Address</th>
+                                    <th>Rating</th>
+                                    <th>Feedback Comments</th>
+                                    <th>Submitted Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-feedback-rows">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2026 BusEase. All rights reserved.</p>
+    </footer>
+
+    <!-- ================= ADD BUS MODAL ================= -->
+    <div id="add-bus-modal" class="modal-overlay">
+        <div class="glass-card modal-card">
+            <div class="modal-header">
+                <h2>Add New Operating Bus</h2>
+                <span class="close-btn" onclick="app.closeAddBusModal()">&times;</span>
+            </div>
+            <form onsubmit="app.handleAddBusSubmit(event)">
+                <div class="form-group">
+                    <label for="new-bus-number">Bus Number</label>
+                    <input type="text" id="new-bus-number" placeholder="e.g. IN-12-AB-5678" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-operator-name">Operator Name</label>
+                    <input type="text" id="new-operator-name" placeholder="e.g. SRS Travels" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-bus-type">Bus Class</label>
+                    <select id="new-bus-type" required>
+                        <option value="A/C Sleeper (2+1)">A/C Sleeper (2+1)</option>
+                        <option value="A/C Seater (2+2)">A/C Seater (2+2)</option>
+                        <option value="Non-A/C Sleeper (2+1)">Non-A/C Sleeper (2+1)</option>
+                        <option value="Non-A/C Seater (2+2)">Non-A/C Seater (2+2)</option>
+                    </select>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="new-total-seats">Total Seats</label>
+                        <input type="number" id="new-total-seats" value="36" min="10" max="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-bus-price">Base Seat Price (₹)</label>
+                        <input type="number" id="new-bus-price" placeholder="800" min="200" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add Bus to Fleet</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= AUTH MODAL (LOGIN/SIGNUP) ================= -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="auth-modal-card">
+            <span class="close-btn" onclick="app.closeAuthModal()">&times;</span>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="app.switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="tab-signup" onclick="app.switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-content active" id="auth-content-login">
+                <form onsubmit="app.handleLocalLogin(event)">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" placeholder="name@example.com" required
+                            autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required
+                            autocomplete="current-password">
+                    </div>
+                    <div style="text-align: right; margin-top: -8px; margin-bottom: 15px;">
+                        <a href="#"
+                            style="font-size: 13px; color: var(--primary); font-weight: 600; text-decoration: none;"
+                            onclick="app.showForgotPasswordForm(event)">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+
+                <div class="social-login-separator">
+                    <span>Or log in with</span>
+                </div>
+
+                <div class="social-login-grid">
+                    <button class="social-btn social-google" onclick="app.handleSocialLoginReal('Google')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="social-icon">
+                            <path
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                                fill="#4285F4" />
+                            <path
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                                fill="#34A853" />
+                            <path
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.62-.63-1.07-1.39-1.21-2.22z"
+                                fill="#FBBC05" />
+                            <path
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                                fill="#EA4335" />
+                        </svg>
+                        Continue with Google
+                    </button>
+                    <button class="social-btn social-apple" onclick="app.handleSocialLoginReal('Apple')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="social-icon">
+                            <path
+                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.2.67-2.92 1.51-.64.73-1.2 1.87-1.05 2.98 1.11.09 2.25-.56 2.98-1.43z"
+                                fill="#000000" />
+                        </svg>
+                        Continue with Apple
+                    </button>
+                    <button class="social-btn social-microsoft" onclick="app.handleSocialLoginReal('Microsoft')">
+                        <svg viewBox="0 0 23 23" width="20" height="20" class="social-icon">
+                            <path d="M0 0h11v11H0z" fill="#f25022" />
+                            <path d="M12 0h11v11H12z" fill="#7fba00" />
+                            <path d="M0 12h11v11H0z" fill="#00a4ef" />
+                            <path d="M12 12h11v11H12z" fill="#ffb900" />
+                        </svg>
+                        Continue with Microsoft
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div class="auth-content" id="auth-content-forgot">
+                <h3 style="margin-bottom: 8px; font-weight: 700; color: var(--secondary);">Reset Password</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your phone number to
+                    receive a simulated MFA OTP code.</p>
+                <form id="forgot-form" onsubmit="app.handleForgotPasswordSubmit(event)">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="forgot-phone" placeholder="9876543210" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Send OTP</button>
+                </form>
+
+                <form id="reset-form" onsubmit="app.handleResetPasswordSubmit(event)" style="display: none;">
+                    <div class="form-group">
+                        <label>Enter 6-Digit OTP (MFA)</label>
+                        <input type="text" id="reset-otp" placeholder="123456" maxlength="6" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label>New Password</label>
+                        <input type="password" id="reset-new-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Reset
+                        Password</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#"
+                        style="font-size: 13px; color: var(--text-muted); font-weight: 600; text-decoration: none;"
+                        onclick="app.switchAuthTab('login')">← Back to Login</a>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="auth-content" id="auth-content-signup">
+                <form onsubmit="app.handleLocalRegister(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="register-name" placeholder="John Doe" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="register-email" placeholder="name@example.com" required
+                            autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="register-phone" placeholder="9876543210" required autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="register-password" placeholder="••••••••" required
+                            autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+
+                <div class="social-login-separator">
+                    <span>Or log in with</span>
+                </div>
+
+                <div class="social-login-grid">
+                    <button class="social-btn social-google" onclick="app.handleSocialLoginReal('Google')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="social-icon">
+                            <path
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                                fill="#4285F4" />
+                            <path
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                                fill="#34A853" />
+                            <path
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.62-.63-1.07-1.39-1.21-2.22z"
+                                fill="#FBBC05" />
+                            <path
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                                fill="#EA4335" />
+                        </svg>
+                        Continue with Google
+                    </button>
+                    <button class="social-btn social-apple" onclick="app.handleSocialLoginReal('Apple')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="social-icon">
+                            <path
+                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.2.67-2.92 1.51-.64.73-1.2 1.87-1.05 2.98 1.11.09 2.25-.56 2.98-1.43z"
+                                fill="#000000" />
+                        </svg>
+                        Continue with Apple
+                    </button>
+                    <button class="social-btn social-microsoft" onclick="app.handleSocialLoginReal('Microsoft')">
+                        <svg viewBox="0 0 23 23" width="20" height="20" class="social-icon">
+                            <path d="M0 0h11v11H0z" fill="#f25022" />
+                            <path d="M12 0h11v11H12z" fill="#7fba00" />
+                            <path d="M0 12h11v11H0z" fill="#00a4ef" />
+                            <path d="M12 12h11v11H12z" fill="#ffb900" />
+                        </svg>
+                        Continue with Microsoft
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MOCK SOCIAL LOGIN POPUP WINDOW ================= -->
+    <div id="social-popup-overlay" class="modal-overlay">
+        <div class="social-popup-card">
+            <div class="popup-top">
+                <span id="popup-provider-name">Google</span> Account Sign-In
+            </div>
+            <div class="popup-body">
+                <div class="popup-brand-logo" id="popup-provider-logo">G</div>
+                <h2>Sign in to continue to BusEase</h2>
+                <p>Choose an account to sign in</p>
+
+                <div class="popup-accounts">
+                    <div class="popup-account-row" onclick="app.selectSocialAccount('john@gmail.com', 'John Doe')">
+                        <div class="avatar-small">JD</div>
+                        <div class="acc-details">
+                            <strong>John Doe</strong>
+                            <span>john@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="popup-account-row"
+                        onclick="app.selectSocialAccount('guest_user@outlook.com', 'Guest Traveler')">
+                        <div class="avatar-small">GT</div>
+                        <div class="acc-details">
+                            <strong>Guest Traveler</strong>
+                            <span>guest_user@outlook.com</span>
+                        </div>
+                    </div>
+                    <div class="popup-account-row"
+                        onclick="app.selectSocialAccount('admin@busbooking.com', 'System Admin')">
+                        <div class="avatar-small">SA</div>
+                        <div class="acc-details">
+                            <strong>System Admin</strong>
+                            <span>admin@busbooking.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-footer">
+                <span>Secure connection via SSL.</span>
+                <span class="cancel-link" onclick="app.closeSocialPopup()">Cancel</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FLOATING CHAT WIDGET ================= -->
+    <div class="chat-widget-wrapper">
+        <!-- Bubble Button -->
+        <div class="chat-bubble" onclick="app.toggleChatWindow()">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" style="display:block;">
+                <path
+                    d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+            </svg>
+            <span class="chat-badge" id="chat-unread-badge">1</span>
+        </div>
+
+        <!-- Chat Panel Window -->
+        <div class="chat-panel" id="chat-assistant-panel">
+            <div class="chat-panel-header">
+                <div class="chat-assistant-avatar">🤖</div>
+                <div class="chat-assistant-info">
+                    <h4>BusEase Assistant</h4>
+                    <span>Active Support Bot</span>
+                </div>
+                <span class="chat-panel-close" onclick="app.toggleChatWindow()">&times;</span>
+            </div>
+
+            <div class="chat-panel-body" id="chat-logs-area">
+                <div class="chat-msg bot">
+                    <p>Namaste! 🙏 Welcome to BusEase support. How can I assist you today?</p>
+                </div>
+                <div class="chat-msg bot">
+                    <p>Select a quick FAQ topic below or ask your own question:</p>
+                    <div class="chat-quick-options">
+                        <button class="chat-opt-btn" onclick="app.sendQuickChatMsg('How to prebook a seat?')">How to
+                            prebook a seat?</button>
+                        <button class="chat-opt-btn" onclick="app.sendQuickChatMsg('What is the refund policy?')">What
+                            is the refund policy?</button>
+                        <button class="chat-opt-btn"
+                            onclick="app.sendQuickChatMsg('Where to apply discount coupons?')">Where to apply discount
+                            coupons?</button>
+                    </div>
+                </div>
+            </div>
+
+            <form class="chat-panel-footer" onsubmit="app.handleChatSubmit(event)">
+                <input type="text" id="chat-input-msg" placeholder="Type your query..." autocomplete="off">
+                <button type="submit" class="btn-chat-send">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

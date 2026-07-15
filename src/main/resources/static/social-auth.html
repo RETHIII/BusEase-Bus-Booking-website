@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='5' width='20' height='12' rx='3' fill='none' stroke='%23d84f57' stroke-width='2.5'/%3E%3Ccircle cx='6' cy='19' r='2.5' fill='%23d84f57'/%3E%3Ccircle cx='18' cy='19' r='2.5' fill='%23d84f57'/%3E%3Cpath d='M7 10h10M7 13h6' stroke='%23d84f57' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <!-- Outfit Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --google-blue: #1a73e8;
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: #f0f2F5;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Provider Specific Designs */
+        body.theme-apple {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        body.theme-apple .auth-container {
+            background-color: #1c1c1e;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        body.theme-microsoft .auth-container {
+            border-radius: 0px; /* Microsoft style is sharp */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 1px solid #d2d2d2;
+        }
+
+        /* Common Elements */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: inherit;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 15px;
+            color: #5f6368;
+            margin-bottom: 30px;
+        }
+
+        body.theme-apple .subtitle {
+            color: #8e8e93;
+        }
+
+        body.theme-microsoft .subtitle {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        body.theme-microsoft .title {
+            text-align: left;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        body.theme-microsoft .logo-container {
+            justify-content: flex-start;
+            margin-bottom: 16px;
+        }
+
+        /* Account List Item */
+        .account-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .account-item:hover {
+            background-color: #f8f9fa;
+            border-color: #c3c7cc;
+        }
+
+        body.theme-apple .account-item {
+            border-color: #3a3a3c;
+        }
+
+        body.theme-apple .account-item:hover {
+            background-color: #2c2c2e;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e8f0fe;
+            color: var(--google-blue);
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 16px;
+            text-transform: uppercase;
+        }
+
+        body.theme-apple .avatar {
+            background-color: #3a3a3c;
+            color: #ffffff;
+        }
+
+        .account-details {
+            flex: 1;
+        }
+
+        .account-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .account-email {
+            font-size: 13px;
+            color: #5f6368;
+        }
+
+        body.theme-apple .account-email {
+            color: #8e8e93;
+        }
+
+        .btn-use-other {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            width: 100%;
+            background: none;
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--google-blue);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-use-other:hover {
+            background-color: #f1f3f4;
+        }
+
+        body.theme-apple .btn-use-other {
+            border-color: #3a3a3c;
+            color: #0a84ff;
+        }
+
+        body.theme-apple .btn-use-other:hover {
+            background-color: #2c2c2e;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #5f6368;
+        }
+
+        body.theme-apple .form-group label {
+            color: #8e8e93;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--google-blue);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        body.theme-apple .form-input {
+            background-color: #2c2c2e;
+            border-color: #3a3a3c;
+            color: #ffffff;
+        }
+
+        body.theme-apple .form-input:focus {
+            border-color: #0a84ff;
+            box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--google-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        body.theme-apple .btn-submit {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        body.theme-microsoft .btn-submit {
+            background-color: #0067b8;
+            border-radius: 0px;
+        }
+
+        .footer-links {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #70757a;
+        }
+
+        body.theme-apple .footer-links {
+            color: #8e8e93;
+        }
+
+        .footer-links a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body id="body-theme">
+
+    <div class="auth-container">
+        <!-- Logo -->
+        <div class="logo-container" id="logo-area"></div>
+
+        <!-- Headings -->
+        <h1 class="title" id="auth-title">Sign in</h1>
+        <p class="subtitle" id="auth-subtitle">to continue to BusEase</p>
+
+        <!-- Dynamic Content -->
+        <div id="dynamic-content">
+            <!-- Loading -->
+            <div style="text-align: center; padding: 20px; font-weight: 500;">Loading Authentication...</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-links" id="footer-area">
+            <span id="footer-lang">English (United States)</span>
+            <div>
+                <a href="#">Help</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#">Privacy</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const provider = params.get('provider') || 'Google';
+
+        // Apply Provider Themes & Logos
+        const body = document.getElementById('body-theme');
+        const logoArea = document.getElementById('logo-area');
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+
+        if (provider === 'Google') {
+            body.className = 'theme-google';
+            title.innerText = 'Choose an account';
+            subtitle.innerText = 'to continue to BusEase';
+            
+            // Google Colored G Logo
+            logoArea.innerHTML = `
+                <svg viewBox="0 0 24 24" width="40" height="40">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.62-.63-1.07-1.39-1.21-2.22z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+            `;
+            loadAccountSelection();
+
+        } else if (provider === 'Apple') {
+            body.className = 'theme-apple';
+            title.innerText = 'Sign in with Apple ID';
+            subtitle.innerText = 'Use your Apple ID to sign in to BusEase.';
+            
+            // Apple logo
+            logoArea.innerHTML = `
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.2.67-2.92 1.51-.64.73-1.2 1.87-1.05 2.98 1.11.09 2.25-.56 2.98-1.43z"/>
+                </svg>
+            `;
+            loadAppleForm();
+
+        } else if (provider === 'Microsoft') {
+            body.className = 'theme-microsoft';
+            title.innerText = 'Sign in';
+            subtitle.innerText = 'to continue to BusEase';
+            
+            // Microsoft 4 flag squares
+            logoArea.innerHTML = `
+                <svg viewBox="0 0 23 23" width="36" height="36">
+                    <path d="M0 0h11v11H0z" fill="#f25022"/>
+                    <path d="M12 0h11v11H12z" fill="#7fba00"/>
+                    <path d="M0 12h11v11H0z" fill="#00a4ef"/>
+                    <path d="M12 12h11v11H12z" fill="#ffb900"/>
+                </svg>
+            `;
+            loadMicrosoftForm();
+        }
+
+        // Account selection list (replicates real chooser window)
+        function loadAccountSelection() {
+            const container = document.getElementById('dynamic-content');
+            
+            // Get pre-loaded or mock profiles
+            const profiles = [
+                { name: 'Rethisha Radhakrishnan', email: 'rethisharadha2003@gmail.com' },
+                { name: 'John Doe', email: 'john@gmail.com' }
+            ];
+
+            let html = '';
+            profiles.forEach(p => {
+                const initials = p.name.split(' ').map(n=>n[0]).join('').toUpperCase();
+                html += `
+                    <div class="account-item" onclick="sendAuthBack('${p.email}', '${p.name}')">
+                        <div class="avatar">${initials}</div>
+                        <div class="account-details">
+                            <div class="account-name">${p.name}</div>
+                            <div class="account-email">${p.email}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <button class="btn-use-other" onclick="loadUserRegisterForm()">Use another account</button>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Custom account input form (user can add their accounts in real-time)
+        function loadUserRegisterForm() {
+            const container = document.getElementById('dynamic-content');
+            title.innerText = 'Create profile';
+            subtitle.innerText = `Sign in with another ${provider} account`;
+            
+            container.innerHTML = `
+                <form onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" id="custom-email" class="form-input" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="custom-name" class="form-input" placeholder="John Doe" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Next</button>
+                </form>
+                <button class="btn-use-other" onclick="loadAccountSelection()" style="margin-top:12px; border:none; background:none;">← Back to accounts</button>
+            `;
+        }
+
+        // Microsoft Flow
+        function loadMicrosoftForm() {
+            const container = document.getElementById('dynamic-content');
+            container.innerHTML = `
+                <form onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <input type="email" id="custom-email" class="form-input" placeholder="Email, phone, or Skype" required style="border-radius:0px;">
+                    </div>
+                    <div class="form-group" style="display:none;" id="ms-name-group">
+                        <input type="text" id="custom-name" class="form-input" placeholder="Full Name" style="border-radius:0px;">
+                    </div>
+                    <button type="submit" class="btn-submit" id="ms-btn">Next</button>
+                </form>
+            `;
+        }
+
+        // Apple Flow
+        function loadAppleForm() {
+            const container = document.getElementById('dynamic-content');
+            container.innerHTML = `
+                <form onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <input type="email" id="custom-email" class="form-input" placeholder="Apple ID" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="custom-pwd" class="form-input" placeholder="Password" required>
+                    </div>
+                    <div class="form-group" style="display:none;" id="apple-name-group">
+                        <input type="text" id="custom-name" class="form-input" placeholder="Full Name">
+                    </div>
+                    <button type="submit" class="btn-submit" id="apple-btn">Sign In</button>
+                </form>
+            `;
+        }
+
+        // Form callback logic
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('custom-email').value;
+            const pwdInput = document.getElementById('custom-pwd');
+            
+            // If name is hidden, show it to prompt user register in real-time
+            const nameGroup = document.getElementById('ms-name-group') || document.getElementById('apple-name-group') || (provider === 'Google' ? {style:{display: 'none'}} : null);
+            const nameInput = document.getElementById('custom-name');
+            const btn = document.getElementById('ms-btn') || document.getElementById('apple-btn');
+            
+            if (nameGroup && nameGroup.style.display === 'none') {
+                nameGroup.style.display = 'block';
+                nameInput.required = true;
+                if (btn) btn.innerText = 'Sign In';
+                return;
+            }
+
+            const name = nameInput && nameInput.value ? nameInput.value : email.split('@')[0];
+            sendAuthBack(email, name);
+        }
+
+        // Send login payload to main window app.js
+        function sendAuthBack(email, name) {
+            if (window.opener && window.opener.app) {
+                window.opener.app.selectSocialAccount(email, name, provider);
+            }
+            window.close();
+        }
+    </script>
+</body>
+</html>
