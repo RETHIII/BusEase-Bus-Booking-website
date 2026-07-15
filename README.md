@@ -1,6 +1,6 @@
-# BharatBus - Premium Bus Booking & Reservation System
+# BusEase - Premium Bus Booking & Reservation System
 
-BharatBus is a modern, single-page web application (SPA) built using **Spring Boot** for the backend REST API, **Spring Security with JWT** for authentication, **Spring Data JPA** with **PostgreSQL** for persistence, and **Vanilla HTML5/CSS3/JS** (incorporating redBus-style interactive seat mapping and fully responsive viewports) for the frontend.
+BusEase is a modern, single-page web application (SPA) built using **Spring Boot** for the backend REST API, **Spring Security with JWT** for authentication, **Spring Data JPA** with **PostgreSQL** for persistence, and **Vanilla HTML5/CSS3/JS** (incorporating redBus-style interactive seat mapping and fully responsive viewports) for the frontend.
 
 ---
 
