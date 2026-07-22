@@ -178,17 +178,3 @@ git push -u origin main
 
 ---
 
-## 📄 6. How to Export this Document to PDF
-
-To save this entire documentation as a clean, professionally formatted PDF file, follow either of these methods:
-
-### Option A: From VS Code (Recommended)
-1. Install the **Markdown PDF** extension by *yzane* in VS Code.
-2. Open this `project_documentation.md` file.
-3. Right-click anywhere in the editor window and select: **Markdown PDF: Export (pdf)**.
-4. The PDF file will be created next to this markdown file instantly.
-
-### Option B: From your Web Browser
-1. Copy the contents of this document.
-2. Paste it into an online Markdown editor like [StackEdit](https://stackedit.io/) or [Dillinger](https://dillinger.io/).
-3. Use the editor's **Export** or **Print** feature, and select **Save as PDF** in your browser printing wizard.
