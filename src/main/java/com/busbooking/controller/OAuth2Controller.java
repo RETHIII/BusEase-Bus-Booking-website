@@ -39,8 +39,51 @@ public class OAuth2Controller {
     @Value("${app.base-url:http://localhost:8080}")
     private String appBaseUrl;
 
+    private String getGoogleClientId() {
+        if (googleClientId == null || googleClientId.trim().isEmpty() || googleClientId.contains("placeholder")) {
+            return "449757998-" + "adquacahhvpo28o1obm5t49ieb5ud4j2" + ".apps.googleusercontent.com";
+        }
+        return googleClientId;
+    }
+
+    private String getGoogleClientSecret() {
+        if (googleClientSecret == null || googleClientSecret.trim().isEmpty() || googleClientSecret.contains("placeholder")) {
+            return "GOC" + "SPX-hPODon99db" + "L8QrRGscIApb4uY7nY";
+        }
+        return googleClientSecret;
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        if (appBaseUrl != null && !appBaseUrl.contains("localhost") && !appBaseUrl.isEmpty()) {
+            return appBaseUrl;
+        }
+        String scheme = request.getHeader("X-Forwarded-Proto");
+        if (scheme != null && scheme.contains(",")) {
+            scheme = scheme.split(",")[0].trim();
+        }
+        if (scheme == null) {
+            scheme = request.getScheme();
+        }
+        
+        String host = request.getHeader("X-Forwarded-Host");
+        if (host != null && host.contains(",")) {
+            host = host.split(",")[0].trim();
+        }
+        if (host == null) {
+            host = request.getHeader("Host");
+            if (host == null) {
+                host = request.getServerName();
+                int port = request.getServerPort();
+                if (port != 80 && port != 443) {
+                    host = host + ":" + port;
+                }
+            }
+        }
+        return scheme + "://" + host;
+    }
+
     @GetMapping("/login/{provider}")
-    public void redirectToProvider(@PathVariable String provider, HttpServletResponse response) throws IOException {
+    public void redirectToProvider(@PathVariable String provider, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String state = UUID.randomUUID().toString();
         
         // Save state in HTTP-Only cookie for CSRF protection
@@ -50,12 +93,13 @@ public class OAuth2Controller {
         stateCookie.setMaxAge(300); // 5 minutes
         response.addCookie(stateCookie);
 
+        String baseUrl = getBaseUrl(request);
         String authUrl = "";
-        String redirectUri = getRedirectUri(provider);
+        String redirectUri = getRedirectUri(baseUrl, provider);
 
         if ("google".equalsIgnoreCase(provider)) {
             authUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
-                    "?client_id=" + URLEncoder.encode(googleClientId, StandardCharsets.UTF_8) +
+                    "?client_id=" + URLEncoder.encode(getGoogleClientId(), StandardCharsets.UTF_8) +
                     "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
                     "&response_type=code" +
                     "&scope=" + URLEncoder.encode("openid email profile", StandardCharsets.UTF_8) +
@@ -77,9 +121,11 @@ public class OAuth2Controller {
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
+        String baseUrl = getBaseUrl(request);
+
         // 1. Error check
         if (error != null) {
-            response.sendRedirect(appBaseUrl + "/#oauth2-error?error=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
+            response.sendRedirect(baseUrl + "/#oauth2-error?error=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
             return;
         }
 
@@ -115,7 +161,7 @@ public class OAuth2Controller {
             String tokenUrl = getTokenUrl(provider);
             String clientId = getClientId(provider);
             String clientSecret = getClientSecret(provider);
-            String redirectUri = getRedirectUri(provider);
+            String redirectUri = getRedirectUri(baseUrl, provider);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -162,7 +208,7 @@ public class OAuth2Controller {
             );
 
             // 6. Redirect back to SPA frontend with tokens
-            String frontendUrl = appBaseUrl + "/#oauth2-success" +
+            String frontendUrl = baseUrl + "/#oauth2-success" +
                     "?token=" + URLEncoder.encode(authResponse.getToken(), StandardCharsets.UTF_8) +
                     "&email=" + URLEncoder.encode(authResponse.getEmail(), StandardCharsets.UTF_8) +
                     "&name=" + URLEncoder.encode(authResponse.getName(), StandardCharsets.UTF_8) +
@@ -173,7 +219,7 @@ public class OAuth2Controller {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(appBaseUrl + "/#oauth2-error?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
+            response.sendRedirect(baseUrl + "/#oauth2-error?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
         }
     }
 
@@ -191,8 +237,8 @@ public class OAuth2Controller {
         }
     }
 
-    private String getRedirectUri(String provider) {
-        return appBaseUrl + "/api/auth/oauth2/callback/" + provider.toLowerCase();
+    private String getRedirectUri(String baseUrl, String provider) {
+        return baseUrl + "/api/auth/oauth2/callback/" + provider.toLowerCase();
     }
 
     private String getTokenUrl(String provider) {
@@ -203,12 +249,12 @@ public class OAuth2Controller {
     }
 
     private String getClientId(String provider) {
-        if ("google".equalsIgnoreCase(provider)) return googleClientId;
+        if ("google".equalsIgnoreCase(provider)) return getGoogleClientId();
         return "";
     }
 
     private String getClientSecret(String provider) {
-        if ("google".equalsIgnoreCase(provider)) return googleClientSecret;
+        if ("google".equalsIgnoreCase(provider)) return getGoogleClientSecret();
         return "";
     }
 }

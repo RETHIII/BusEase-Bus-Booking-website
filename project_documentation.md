@@ -93,7 +93,7 @@ Ensure the following are installed:
 
 ### 4.2 Database Configuration
 1. Open your PostgreSQL terminal/management client (pgAdmin, DBeaver, etc.).
-2. Execute the database creation command:
+<!-- 2. Execute the database creation command: -->
    ```sql
    CREATE DATABASE bus_booking;
    ```
