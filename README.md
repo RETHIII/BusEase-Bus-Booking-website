@@ -61,47 +61,17 @@ You do not need to install Maven. A Maven Wrapper is included in the project dir
    ```
 
 ---
+## 🌐 Live Demo
 
-## 🔑 Seeded Demo Accounts
+Experience the deployed application here:
 
-The database comes pre-seeded with two accounts for easy testing:
+🔗 https://busease-bus-booking-website.onrender.com
 
-### 👤 Customer Account
-- **Email**: `john@gmail.com`
-- **Password**: `password123`
-- *Use this account to browse buses, select seats, fill passenger details, pay tokens, and view ticket receipts.*
+> Hosted on Render (Free Tier). The first request after inactivity may take around 30–60 seconds while the server wakes up.
 
-### 🔑 System Admin Account
-- **Email**: `admin@busbooking.com`
-- **Password**: `admin123`
-- *Logging in with this account reveals the **Admin Portal** link in the navigation header. Use this to view total occupancy, collected revenues, operating buses fleet lists, passenger transactions logs, and add new buses.*
+## Output Images 
 
----
+<img width="1920" height="1080" alt="Screenshot (137)" src="https://github.com/user-attachments/assets/08aa4f66-9de3-4c7e-ad01-4278e1c71eb7" />
 
-## ☁️ How to Host the Website
 
-Here are instructions for hosting both the database and the application on free/affordable cloud platforms (like **Render** or **Railway**):
-
-### 1. Host the Database
-You can use **Render**, **Railway**, **Supabase**, or **Neon.tech** to spin up a managed PostgreSQL database.
-- Once created, copy the External Database Connection URL (e.g. `jdbc:postgresql://<host>:<port>/<dbname>`).
-
-### 2. Hosting the Spring Boot App (e.g. on Render)
-1. Push your code to a GitHub repository.
-2. Sign up on [Render.com](https://render.com) and click **New > Web Service**.
-3. Connect your GitHub repository.
-4. Configure the Web Service settings:
-   - **Runtime**: `Docker` (if using a Dockerfile) or `Java` (if utilizing Render's native Java environment).
-   - **Build Command**:
-     ```bash
-     ./mvnw clean package -DskipTests
-     ```
-   - **Start Command**:
-     ```bash
-     java -jar target/bus-booking-0.0.1-SNAPSHOT.jar
-     ```
-5. Add the following **Environment Variables** in Render settings to map to your production database credentials:
-   - `SPRING_DATASOURCE_URL` = `jdbc:postgresql://<production-host>:<port>/<dbname>`
-   - `SPRING_DATASOURCE_USERNAME` = `your-production-db-username`
-   - `SPRING_DATASOURCE_PASSWORD` = `your-production-db-password`
-6. Click **Deploy Web Service**. Render will build and expose your backend along with your static frontend index at the generated URL.
+<img width="1920" height="1080" alt="Screenshot (145)" src="https://github.com/user-attachments/assets/c4834769-d35d-4d65-8038-bb997b27101a" />
