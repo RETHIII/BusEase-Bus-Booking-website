@@ -115,6 +115,43 @@ public class UserService {
                 .build();
     }
 
+    public AuthResponse socialLoginOrRegister(String email, String name, String provider, String providerId, String profilePicture) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        User user;
+
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+            if (user.getProvider() == null || "LOCAL".equals(user.getProvider())) {
+                user.setProvider(provider);
+                user.setProviderId(providerId);
+            }
+            if (profilePicture != null) {
+                user.setProfilePicture(profilePicture);
+            }
+            userRepository.save(user);
+        } else {
+            user = User.builder()
+                    .name(name != null ? name : email.split("@")[0])
+                    .email(email)
+                    .role("USER")
+                    .provider(provider)
+                    .providerId(providerId)
+                    .profilePicture(profilePicture)
+                    .build();
+            userRepository.save(user);
+        }
+
+        String token = tokenProvider.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .role(user.getRole())
+                .email(user.getEmail())
+                .name(user.getName())
+                .userId(user.getId())
+                .build();
+    }
+
     public String forgotPassword(AuthRequest.ForgotPassword request) {
         User user = userRepository.findByPhone(request.getPhone())
                 .orElseThrow(() -> new RuntimeException("User not found with this phone number"));

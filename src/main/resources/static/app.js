@@ -20,11 +20,15 @@ class BharatBusApp {
         this.upiTimerInterval = null;
         this.appliedCoupon = null;
         this.discountAmount = 0.0;
+        this.pendingView = null;
 
         this.init();
     }
 
     init() {
+        // Parse OAuth2 redirect params if hash is present
+        this.checkOAuthCallback();
+
         // Load session if exists
         const session = localStorage.getItem('bb_session');
         if (session) {
@@ -56,8 +60,69 @@ class BharatBusApp {
         });
     }
 
+    checkOAuthCallback() {
+        const hash = window.location.hash;
+        if (hash) {
+            if (hash.startsWith('#oauth2-success')) {
+                const queryStr = hash.includes('?') ? hash.split('?')[1] : hash.substring('#oauth2-success'.length + 1);
+                const params = new URLSearchParams(queryStr);
+                const token = params.get('token');
+                const email = params.get('email');
+                const name = params.get('name');
+                const role = params.get('role');
+                const userId = params.get('userId');
+
+                if (token && email && name && role && userId) {
+                    const userData = {
+                        token: token,
+                        email: email,
+                        name: name,
+                        role: role,
+                        id: parseInt(userId)
+                    };
+                    localStorage.setItem('bb_session', JSON.stringify(userData));
+                    
+                    // Clear the URL hash
+                    window.history.replaceState(null, null, ' ');
+
+                    // Alert user and navigate to pending view if it exists
+                    alert(`Welcome back, ${userData.name}!`);
+
+                    const pv = localStorage.getItem('bb_pending_view');
+                    localStorage.removeItem('bb_pending_view');
+                    if (pv) {
+                        this.showView(pv);
+                    } else {
+                        this.showView('home');
+                    }
+                }
+            } else if (hash.startsWith('#oauth2-error')) {
+                const queryStr = hash.includes('?') ? hash.split('?')[1] : hash.substring('#oauth2-error'.length + 1);
+                const params = new URLSearchParams(queryStr);
+                const error = params.get('error');
+
+                window.history.replaceState(null, null, ' ');
+                alert("Social Authentication Error: " + (error || "Unknown error occurred"));
+            }
+        }
+    }
+
     // ================= VIEW NAVIGATION =================
     showView(viewId) {
+        if (viewId === 'my-bookings' && !this.currentUser) {
+            this.pendingView = 'my-bookings';
+            localStorage.setItem('bb_pending_view', 'my-bookings');
+            this.openAuthModal('login');
+            return;
+        }
+        if (viewId === 'admin-dashboard' && (!this.currentUser || this.currentUser.role !== 'ADMIN')) {
+            this.pendingView = 'admin-dashboard';
+            localStorage.setItem('bb_pending_view', 'admin-dashboard');
+            alert("Access Denied: Admin authorization required.");
+            this.openAuthModal('login');
+            return;
+        }
+
         document.querySelectorAll('.app-view').forEach(v => {
             v.classList.remove('active');
         });
@@ -226,11 +291,7 @@ class BharatBusApp {
     }
 
     handleSocialLoginReal(provider) {
-        const redirectUrl = window.location.origin + `/social-auth.html?provider=${provider}`;
-        const width = 500, height = 650;
-        const left = (screen.width - width) / 2;
-        const top = (screen.height - height) / 2;
-        window.open(redirectUrl, `${provider}Login`, `width=${width},height=${height},left=${left},top=${top}`);
+        window.location.href = `/api/auth/oauth2/login/${provider.toLowerCase()}`;
     }
 
     closeSocialPopup() {
@@ -274,6 +335,13 @@ class BharatBusApp {
         if (adminDrawerLink) adminDrawerLink.style.display = displayVal;
         
         alert(`Welcome back, ${userData.name}!`);
+
+        const pv = this.pendingView || localStorage.getItem('bb_pending_view');
+        this.pendingView = null;
+        localStorage.removeItem('bb_pending_view');
+        if (pv) {
+            this.showView(pv);
+        }
     }
 
     logout() {
@@ -283,6 +351,17 @@ class BharatBusApp {
         const adminDrawerLink = document.getElementById('admin-drawer-link');
         if (adminNavLink) adminNavLink.style.display = 'none';
         if (adminDrawerLink) adminDrawerLink.style.display = 'none';
+
+        // Clear dashboard profile elements
+        const lettersEl = document.getElementById('avatar-letters');
+        const nameEl = document.getElementById('profile-name');
+        const emailEl = document.getElementById('profile-email');
+        const historyEl = document.getElementById('booking-history-list');
+        if (lettersEl) lettersEl.innerText = '--';
+        if (nameEl) nameEl.innerText = 'Not Logged In';
+        if (emailEl) emailEl.innerText = '';
+        if (historyEl) historyEl.innerHTML = '';
+
         this.updateHeaderUI();
         this.showView('home');
         alert("Logged out successfully.");

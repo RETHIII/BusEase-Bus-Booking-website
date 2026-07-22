@@ -33,6 +33,9 @@ public class User {
 
     private String providerId;
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
