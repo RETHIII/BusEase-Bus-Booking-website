@@ -36,7 +36,8 @@ public class OAuth2Controller {
     @Value("${oauth2.google.client-secret:placeholder-google-client-secret}")
     private String googleClientSecret;
 
-    private static final String FRONTEND_REDIRECT_URL = "http://localhost:8080/#oauth2-success";
+    @Value("${app.base-url:http://localhost:8080}")
+    private String appBaseUrl;
 
     @GetMapping("/login/{provider}")
     public void redirectToProvider(@PathVariable String provider, HttpServletResponse response) throws IOException {
@@ -78,7 +79,7 @@ public class OAuth2Controller {
 
         // 1. Error check
         if (error != null) {
-            response.sendRedirect("http://localhost:8080/#oauth2-error?error=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
+            response.sendRedirect(appBaseUrl + "/#oauth2-error?error=" + URLEncoder.encode(error, StandardCharsets.UTF_8));
             return;
         }
 
@@ -161,7 +162,7 @@ public class OAuth2Controller {
             );
 
             // 6. Redirect back to SPA frontend with tokens
-            String frontendUrl = FRONTEND_REDIRECT_URL +
+            String frontendUrl = appBaseUrl + "/#oauth2-success" +
                     "?token=" + URLEncoder.encode(authResponse.getToken(), StandardCharsets.UTF_8) +
                     "&email=" + URLEncoder.encode(authResponse.getEmail(), StandardCharsets.UTF_8) +
                     "&name=" + URLEncoder.encode(authResponse.getName(), StandardCharsets.UTF_8) +
@@ -172,7 +173,7 @@ public class OAuth2Controller {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("http://localhost:8080/#oauth2-error?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
+            response.sendRedirect(appBaseUrl + "/#oauth2-error?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
         }
     }
 
@@ -191,7 +192,7 @@ public class OAuth2Controller {
     }
 
     private String getRedirectUri(String provider) {
-        return "http://localhost:8080/api/auth/oauth2/callback/" + provider.toLowerCase();
+        return appBaseUrl + "/api/auth/oauth2/callback/" + provider.toLowerCase();
     }
 
     private String getTokenUrl(String provider) {
