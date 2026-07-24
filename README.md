@@ -1,3 +1,4 @@
+<img width="1920" height="1080" alt="Screenshot (156)" src="https://github.com/user-attachments/assets/8424441a-f3bd-4c49-9cbc-fb27e2650481" />
 # BusEase - Premium Bus Booking & Reservation System
 
 BusEase is a modern, single-page web application (SPA) built using **Spring Boot** for the backend REST API, **Spring Security with JWT** for authentication, **Spring Data JPA** with **PostgreSQL** for persistence, and **Vanilla HTML5/CSS3/JS** (incorporating redBus-style interactive seat mapping and fully responsive viewports) for the frontend.
@@ -82,4 +83,6 @@ Experience the deployed application here:
 <img width="1920" height="1080" alt="Screenshot (145)" src="https://github.com/user-attachments/assets/c4834769-d35d-4d65-8038-bb997b27101a" />
 <img width="1920" height="1080" alt="Screenshot (146)" src="https://github.com/user-attachments/assets/a9996621-fe51-48b8-a83f-c467b2573dee" />
 <img width="1920" height="1080" alt="Screenshot (147)" src="https://github.com/user-attachments/assets/776588a6-fdd1-4660-8964-aaaf6ee7b73f" />
+<img width="1920" height="1080" alt="Screenshot (156)" src="https://github.com/user-attachments/assets/50a36769-51aa-4806-9e66-bcee581a9da5" />
+
 
